@@ -222,8 +222,6 @@ module Plugin::Worldon
           self[:source] = application.name
         end
       end
-      reblogs_count = new_hash[:reblogs_count]
-      favourites_count = new_hash[:favourites_count]
       self
     end
 
@@ -575,7 +573,7 @@ module Plugin::Worldon
         end
       end
 
-      @description = score.inject('') { |desc, note| desc + note.description }
+      @description = score.inject('') { |acc, note| acc + note.description }
       @score = score
     end
 

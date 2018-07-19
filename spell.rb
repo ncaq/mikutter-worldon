@@ -160,8 +160,8 @@ Plugin.create(:worldon) do
     path
   end
 
-  defspell(:compose, :worldon, :photo) do |world, photo, body:, **opts|
-    photo.download.next{|photo|
+  defspell(:compose, :worldon, :photo) do |world, worldon_photo, body:, **opts|
+    worldon_photo.download.next{|photo|
       ext = photo.uri.path.split('.').last || 'png'
       tmp_name = Digest::MD5.hexdigest(photo.uri.to_s) + ".#{ext}"
       tmp_path = media_tmp_dir / tmp_name
@@ -215,7 +215,7 @@ Plugin.create(:worldon) do
   }) do |world, status|
     status_id = pm::API.get_local_status_id(world, status.actual_status)
     if status_id
-      ret = pm::API.call(:delete, world.domain, "/api/v1/statuses/#{status_id}", world.access_token)
+      pm::API.call(:delete, world.domain, "/api/v1/statuses/#{status_id}", world.access_token)
       Plugin.call(:destroyed, status.actual_status)
       status.actual_status
     end

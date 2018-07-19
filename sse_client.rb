@@ -90,8 +90,6 @@ module Plugin::SseClient
 end
 
 Plugin.create(:sse_client) do
-  pm = Plugin::Worldon
-
   connections = {}
   mutex = Thread::Mutex.new
 

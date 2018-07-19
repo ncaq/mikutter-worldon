@@ -1,8 +1,6 @@
 require_relative 'instance_setting_list'
 
 Plugin.create(:worldon) do
-  pm = Plugin::Worldon
-
   # 設定の初期化
   defaults = {
     worldon_enable_streaming: true,
@@ -58,8 +56,6 @@ Plugin.create(:worldon) do
 
   # 編集
   on_worldon_instances_open_edit_dialog do |domain|
-    config = UserConfig[:worldon_instances][domain]
-
     dialog "インスタンス設定の編集" do
       label "インスタンスのドメイン： #{domain}"
     end.next do |result|

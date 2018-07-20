@@ -117,11 +117,22 @@ Plugin.create(:sse_client) do
       end
 
       Plugin.call(:sse_connection_opening, slug)
-      client = HTTPClient.new
-
       thread = Thread.new {
         begin
           parser = Plugin::SseClient::Parser.new(self, slug)
+          client = HTTPClient.new
+          # デフォルトのタイムアウト値は60秒と120秒に設定されています
+          # これはmastodonのAPIを使うには長過ぎます,それを防ぐために短く設定します
+          client.connect_timeout = 5  # デフォルト60秒
+          client.send_timeout    = 10 # デフォルト120秒
+          # 逆に受け取りはストリーム的な接続のためタイムアウトを設定しない
+          client.receive_timeout = 0
+          # cookieは使わないので保持しないようにする
+          client.cookie_manager = nil
+          # OpenSSLの処理を同期で実行しない
+          # 2006年より古いRubyでバグがあるからデフォルトはtrueになっています
+          # プロファイリングすると明らかにOpenSSLの処理が遅いのでfalseに設定
+          client.socket_sync = false
           response = client.request(method, uri.to_s, query, body, headers) do |fragment|
             parser << fragment
           end
